@@ -1,7 +1,15 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+Se desea modelar un supermercado. Un supermercado tiene nombre, dirección y mantiene una estructura que para cada góndola (1..G) y cada estante de la góndola (1..E) almacena el producto a exhibir. De cada producto a exhibir se guarda código, nombre, marca, cantidad de unidades exhibidas y precio por unidad.
+1. Genere las clases necesarias. Provea constructores para iniciar: los productos a partir de la información necesaria; el supermercado a partir de un nombre, una dirección, una cantidad de góndolas G y una cantidad de estantes por góndola E. Inicialmente la estructura no tiene productos a exhibir.
+2. Implemente los métodos necesarios, en las clases que corresponda, para:
+a. Registrar un producto a exhibir en la góndola X, estante Y. Asuma que X e Y están en rango 1..Gy 1..E respectivamente.
+b. Liberar todos los estantes de la góndola X que estén ocupados por productos con cantidad de unidades exhibidas en 0 y devolver un String con las representaciones de los productos eliminados. La representación de un producto sigue el formato:
+C.
+"Producto(Código - nombre - marca - cantidad de unidades exhibidas - precio}" Obtener el número de góndola que exhibe más productos de la marca M. d. Obtener un String que represente el supermercado siguiendo el ejemplo: "Supermercado: Nombre; Dirección
+Gondola 1:
+Estante 1: Producto Código- nombre marca - cantidad de unidades exhibidas - precio} Estante 2: Producto{Código - nombre - marca - cantidad de unidades exhibidas - precio}
+Gondola G:
+3. Realice un programa que instancie un supermercado. Registre productos en distintas góndolas y estantes. Compruebe el correcto funcionamiento de los métodos implementados.
  */
 package Parcial;
 

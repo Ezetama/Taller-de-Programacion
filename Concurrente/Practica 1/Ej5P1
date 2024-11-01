@@ -1,0 +1,114 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso limpiarFlores (ES cantF: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantF:=cantF+1
+  fin
+  proceso limpiarPapeles (ES cantP: numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      cantP:=cantP+1
+  fin
+  proceso recorrerCalles15 (ES cantF: numero)
+  comenzar
+    repetir 15
+      limpiarFlores (cantF)
+      mover
+    limpiarFlores (cantF)
+    Informar (cantF)
+    repetir cantF
+      depositarFlor
+    cantF:=0
+  fin
+  proceso recorrerAvenidas (ES cantP: numero; E cant: numero)
+  comenzar
+    repetir cant
+      limpiarPapeles (cantP)
+      mover
+    limpiarPapeles (cantP)
+    Informar (cantP)
+    repetir cantP
+      depositarPapel
+    cantP:=0
+  fin
+  proceso recorrerCalles30 (ES cantF: numero)
+  comenzar
+    repetir 30
+      limpiarFlores (cantF)
+      mover
+    limpiarFlores (cantF)
+    Informar (cantF)
+    repetir cantF
+      depositarFlor
+    cantF:=0
+  fin
+  
+areas
+  area1: AreaP (1,75,16,80)
+  area2: AreaP (75,80,80,100)
+  area3: AreaP (70,10,100,15)
+  area4: AreaP (10,1,15,11)
+robots
+  robot robot1
+  variables
+    cantF: numero
+  comenzar
+    cantF:=0
+    derecha
+    recorrerCalles15 (cantF)
+    Pos(1,80)
+    recorrerCalles15 (cantF)
+  fin
+  robot robot2
+  variables
+    cantP: numero
+    cant:numero
+  comenzar
+    cantP:=0
+    cant:=20
+    recorrerAvenidas(cantP,cant)
+    Pos(80,80)
+    recorrerAvenidas(cantP,cant)
+  fin
+  robot robot3
+  variables
+    cantF: numero
+  comenzar
+    cantF:=0
+    derecha
+    recorrerCalles30 (cantF)
+    Pos(70,15)
+    recorrerCalles30 (cantF)
+  fin
+  robot robot4
+  variables
+    cantP: numero
+  comenzar
+    cantP:=0
+    recorrerAvenidas(cantP,10)
+    Pos (15,1)
+    recorrerAvenidas(cantP,10)
+  fin
+variables
+  pepe: robot1
+  juan: robot2
+  eze: robot3
+  leo: robot4
+comenzar
+  AsignarArea(pepe, area1)
+  AsignarArea(juan, area2)
+  AsignarArea(eze, area3)
+  AsignarArea(leo, area4)
+  Iniciar(pepe, 1,75)
+  Iniciar (juan, 75,80)
+  Iniciar (eze, 70,10)
+  Iniciar (leo, 10,1)
+fin

@@ -1,0 +1,83 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso juntarPapeles (ES cantP: numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      cantP:=cantP+1
+  fin 
+  proceso limpiar10 (ES cantP: numero)
+  comenzar
+    repetir 10
+      juntarPapeles (cantP)
+      mover
+    juntarPapeles (cantP)
+  fin
+  proceso enviarMensaje (ES cantP: numero)
+  comenzar
+    si PosCa=1
+      EnviarMensaje(cantP,a2)
+    sino
+      EnviarMensaje(cantP,b2)
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot robot1
+  variables
+    cantP: numero
+  comenzar
+    cantP:=0
+    derecha
+    limpiar10(cantP)
+    enviarMensaje(cantP)
+    si PosCa=1
+      RecibirMensaje (cantP,a2)
+      Pos (23,1)
+    sino
+      RecibirMensaje (cantP,b2)
+      Pos (23,5)
+    limpiar10 (cantP)
+    enviarMensaje(cantP)
+  fin
+  robot robot2
+  variables
+    cantP: numero
+  comenzar
+    derecha
+    repetir 2
+      si PosCa=1
+        RecibirMensaje (cantP,a1)
+      sino
+        RecibirMensaje (cantP,b1)
+      limpiar10 (cantP)
+      si PosAv<>44
+        si PosCa=1
+          EnviarMensaje(cantP,a1)
+          Pos (34,1)
+        sino
+          EnviarMensaje(cantP,b1)
+          Pos (34,5)
+    Informar('La cantidad de papeles recogidos es',cantP)
+  fin
+    
+variables
+  a1: robot1
+  a2: robot2
+  b1: robot1
+  b2: robot2
+comenzar
+  AsignarArea(a1, ciudad)
+  AsignarArea(a2, ciudad)
+  AsignarArea(b1, ciudad)
+  AsignarArea(b2, ciudad)
+  Iniciar(a1, 1,1)
+  Iniciar(a2, 12,1)
+  Iniciar(b1, 1,5)
+  Iniciar(b2, 12,5)
+fin

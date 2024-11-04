@@ -1,0 +1,85 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso juntarFlores(ES cantF: numero)
+  comenzar
+    repetir 9
+      mientras HayFlorEnLaEsquina
+        tomarFlor
+        cantF:=cantF+1
+      mover
+  fin
+areas
+  area1: AreaP (1,1,1,10)
+  area2: AreaP (2,11,2,20)
+  area3: AreaP (99,99,100,100)
+robots
+  robot juntador
+  variables
+    cantF: numero
+    soy:numero
+  comenzar
+    cantF:=0
+    RecibirMensaje(soy,jefecito)
+    juntarFlores(cantF)
+    EnviarMensaje (soy,jefecito)
+    EnviarMensaje (cantF,jefecito)
+    RecibirMensaje (cantF,jefecito)
+    si (cantF<>0)
+      Informar (cantF)
+    
+  fin
+  robot jefe
+  variables
+    numr: numero
+    cant: numero
+    max: numero
+    min: numero
+  comenzar
+    max:=0
+    min:=0
+    EnviarMensaje(1,juan)
+    EnviarMensaje(2,pepe)
+    repetir 2
+      RecibirMensaje(cant,*)
+      si cant=1
+        RecibirMensaje(cant,juan)
+        si cant>max
+          min:=max
+          max:=cant
+          numr:=1
+        sino
+          min:=cant
+      sino
+        RecibirMensaje (cant,pepe)
+        si cant>max
+          min:=max
+          max:=cant
+          numr:=2
+        sino
+          min:=cant
+    cant:=max-min
+    si numr=1
+      EnviarMensaje(cant,juan)
+      EnviarMensaje(0,pepe)  
+    sino
+      EnviarMensaje(cant,pepe)   
+      EnviarMensaje(0,juan)    
+  fin
+  
+variables
+  juan: juntador
+  pepe: juntador
+  jefecito: jefe
+comenzar
+  AsignarArea(juan, area1)
+  AsignarArea(pepe, area2)
+  AsignarArea(jefecito, area3)
+  Iniciar(juan, 1,1)
+  Iniciar(pepe, 2,11)
+  Iniciar(jefecito, 99,99)
+fin

@@ -1,0 +1,131 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un cÃ³digo de ejemplo que implementa un
+proceso que recibe un nÃºmero de avenida como parÃ¡metro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso limpiarfyp
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+  fin
+  proceso LimpiarCalle
+  variables
+    calle: numero
+    avenida: numero
+  comenzar
+    Random(calle,1,100)
+    Random(avenida,1,100)
+    Pos(calle,avenida)
+    limpiarfyp
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot jefe
+  variables
+    aux: numero
+    cant1: numero
+    cant2: numero
+    cant3: numero
+    cant4: numero
+    max:numero
+    corte:numero
+    termine: boolean
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+    corte:=0
+    repetir 10
+      Random(aux,1,4)
+      si aux=1
+        EnviarMensaje(corte,r1)
+        cant1:=cant1+1
+        RecibirMensaje(termine,r1)
+      sino
+        si aux=2
+          EnviarMensaje(corte,r1)
+          cant2:=cant2+1
+          RecibirMensaje(termine,r2)
+        sino
+          si aux=3
+            EnviarMensaje(corte,r1)
+            cant3:=cant3+1
+            RecibirMensaje(termine,r3)
+          sino
+            EnviarMensaje(corte,r1)
+            cant4:=cant4+1
+            RecibirMensaje(termine,r4)
+      corte:=corte+1 
+    cant1:=max
+    si cant2>max
+      max:=cant2
+    sino
+      si cant3>max
+        max:=cant3
+      sino
+        si cant4>max
+          max:=cant4
+    si max=cant1
+      Informar('El robot ganador es el 1',max)
+      EnviarMensaje(V,r1)
+    sino
+      si max=cant2
+        Informar('El robot ganador es el 2',max)
+        EnviarMensaje(V,r2)
+      sino
+        si max=cant3
+          Informar('El robot ganador es el 3',max)
+          EnviarMensaje(V,r3)
+        sino
+          Informar('El robot ganador es el 4',max)
+          EnviarMensaje(V,r4)
+  fin
+  robot robot1
+  variables
+    aux:numero
+    miAvenida: numero
+  comenzar
+    miAvenida: PosAv
+    mientras aux<>10
+      RecibirMensaje(aux,*)
+      si aux<>10
+        Limpiarcalle
+        EnviarMensaje(V,jefecito)
+      sino
+        EnviarMensaje(10,r1)
+        EnviarMensaje(10,r2)
+        EnviarMensaje(10,r3)
+        EnviarMensaje(10,r4)
+      Pos(miAvenida,1)
+    RecibirMensaje(gane,*)
+    si gane
+      EnviarMensaje(F,r1)
+      EnviarMensaje(F,r2)
+      EnviarMensaje(F,r3)
+      EnviarMensaje(F,r4)
+      Pos(50,50)
+  fin
+variables
+  r1: robot1
+  r1: robot1
+  r1: robot1
+  r1: robot1
+  jefecito: jefe
+comenzar
+  AsignarArea(r1, ciudad)
+  AsignarArea(r2, ciudad)
+  AsignarArea(r3, ciudad)
+  AsignarArea(r4, ciudad)
+  AsignarArea(jefecito, ciudad)
+  Iniciar(r1, 25,1)
+  Iniciar(r2, 30,1)
+  Iniciar(r3, 35,1)
+  Iniciar(r4, 40,1)
+  Iniciar(jefecito, 1,1)
+fin

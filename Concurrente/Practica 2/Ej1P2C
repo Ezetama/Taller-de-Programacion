@@ -1,0 +1,98 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un cÃ³digo de ejemplo que implementa un
+proceso que recibe un nÃºmero de avenida como parÃ¡metro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso juntarFlores(ES cantF: numero)
+  comenzar
+    repetir 9
+      mientras HayFlorEnLaEsquina
+        tomarFlor
+        cantF:=cantF+1
+      mover
+  fin
+areas
+  area1: AreaP (1,1,1,10)
+  area2: AreaP (2,11,2,20)
+  area3: AreaP (2,1,2,1)
+  area4: AreaP (3,21,3,30)
+  area5: AreaP (4,31,4,40)
+  area6: AreaP (5,41,5,50)
+  area7: AreaP (6,51,6,60)
+robots
+  robot juntador
+  variables
+    cantF: numero
+    soy:numero
+  comenzar
+    cantF:=0
+    RecibirMensaje(soy,jefecito)
+    juntarFlores(cantF)
+    EnviarMensaje (soy,jefecito)
+    EnviarMensaje (cantF,jefecito)
+    
+  fin
+  robot jefe
+  variables
+    cant: numero
+    max: numero
+    min: numero
+  comenzar
+    max:=0
+    EnviarMensaje(1,juan)
+    EnviarMensaje(2,pepe)
+    EnviarMensaje(3,horacio)
+    EnviarMensaje(4,eze)
+    EnviarMensaje(5,leo)
+    EnviarMensaje(6,pan)
+    repetir 6
+      RecibirMensaje(cant,*)
+      si cant=1
+        RecibirMensaje(cant,juan)
+      sino
+        si cant=2
+          RecibirMensaje (cant,pepe)
+        sino
+          si cant=3
+            RecibirMensaje (cant,horacio)
+          sino
+            si cant=4
+              RecibirMensaje (cant,eze)
+            sino
+              si cant=5
+                RecibirMensaje (cant,leo)
+              sino
+                si cant=6
+                  RecibirMensaje (cant,pan)
+      si cant>max
+        max:=cant
+    Informar (max)
+        
+  fin
+  
+variables
+  juan: juntador
+  pepe: juntador
+  horacio: juntador
+  eze: juntador
+  leo: juntador
+  pan: juntador
+  jefecito: jefe
+comenzar
+  AsignarArea(juan, area1)
+  AsignarArea(pepe, area2)
+  AsignarArea(jefecito, area3)
+  AsignarArea(horacio, area4)
+  AsignarArea(eze, area5)
+  AsignarArea(leo, area6)
+  AsignarArea(pan, area7)
+  Iniciar(juan, 1,1)
+  Iniciar(pepe, 2,11)
+  Iniciar(jefecito, 2,1)
+  Iniciar(horacio, 3,21)
+  Iniciar(eze, 4,31)
+  Iniciar(leo, 5,41)
+  Iniciar(pan, 6,51)
+fin

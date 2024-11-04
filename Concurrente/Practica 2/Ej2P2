@@ -1,0 +1,74 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso recogerfyp (ES cantF: numero; ES cantP: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantF:=cantF+1
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      cantP:=cantP+1
+  fin
+  proceso Escalera
+  variables
+    altura: numero
+    cant: numero
+    cantF: numero
+    cantP: numero
+  comenzar
+    cant:=0
+    cantF:=0
+    cantP:=0
+    repetir 4
+      Random (altura, 1, 5)
+      repetir altura
+        recogerfyp (cantF,cantP)
+        mover 
+      recogerfyp (cantF,cantP)
+      derecha
+      mover
+      repetir 3
+        derecha
+      si cantF>cantP
+        cant:=cant+1
+    EnviarMensaje(cant,jefecito)
+  fin
+areas
+  Area: AreaC (1,1,100,100)
+robots
+  robot robot1
+  comenzar
+    Escalera
+  fin
+  robot jefe
+  variables
+    suma:numero
+    aux:numero
+  comenzar
+    suma:=0
+    repetir 3
+      RecibirMensaje(aux,*)
+      suma:=suma+aux
+    Informar('es la cantidad total de escalones con mas flores que papeles',suma)
+  fin
+  
+variables
+  r1: robot1
+  r2: robot1
+  r3: robot1
+  jefecito: jefe
+comenzar
+  AsignarArea(r1, Area)
+  AsignarArea(r2, Area)
+  AsignarArea(r3, Area)
+  AsignarArea(jefecito, Area)
+  Iniciar(jefecito, 1,1)
+  Iniciar(r1, 2,1)
+  Iniciar(r2, 7,1)
+  Iniciar(r3, 12,1)
+fin

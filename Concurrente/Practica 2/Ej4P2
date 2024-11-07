@@ -1,0 +1,169 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un cÃ³digo de ejemplo que implementa un
+proceso que recibe un nÃºmero de avenida como parÃ¡metro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso limpiarfyp
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+  fin
+  proceso LimpiarCalle
+  variables
+    calle: numero
+    avenida: numero
+  comenzar
+    Random(calle,25,75)
+    Random(avenida,25,75)
+    Pos(calle,avenida)
+    limpiarfyp
+  fin
+  proceso identificar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+  proceso cortar
+  comenzar
+    EnviarMensaje(F,r1)
+    EnviarMensaje(F,r2)
+    EnviarMensaje(F,r3)
+    EnviarMensaje(F,r4)
+  fin
+  proceso calcularmax (ES rmax: numero; ES cantmax: numero)
+  variables
+    id: numero
+    cant: numero
+  comenzar
+    cantmax:=-1
+    repetir 4
+      RecibirMensaje (id,*)
+      si id=1
+        RecibirMensaje(cant,r1)
+      sino
+        si id=2
+          RecibirMensaje(cant,r2)
+        sino
+          si id=3
+            RecibirMensaje(cant,r3)
+          sino
+            RecibirMensaje(cant,r4)
+      si cant>cantmax
+        rmax:=id
+        cantmax:=cant
+  fin
+  proceso InformarGanador (E rmax: numero)
+  comenzar
+    si rmax=1
+      EnviarMensaje(V,r1)
+      EnviarMensaje(F,r2)
+      EnviarMensaje(F,r3)
+      EnviarMensaje(F,r4)
+    sino
+      si rmax=2
+        EnviarMensaje(V,r2)
+        EnviarMensaje(F,r1)
+        EnviarMensaje(F,r3)
+        EnviarMensaje(F,r4)
+      sino
+        si rmax=3
+          EnviarMensaje(V,r3)
+          EnviarMensaje(F,r2)
+          EnviarMensaje(F,r1)
+          EnviarMensaje(F,r4)
+        sino
+          EnviarMensaje(V,r4)
+          EnviarMensaje(F,r2)
+          EnviarMensaje(F,r3)
+          EnviarMensaje(F,r1)
+  fin
+  
+areas
+  ciudad: AreaPC (25,25,75,75)
+  area1: AreaP (25,1,25,1)
+  area2: AreaP (30,1,30,1)
+  area3: AreaP (35,1,35,1)
+  area4: AreaP (40,1,40,1)
+  areaJefe: AreaP (1,1,1,1)
+robots
+  robot jefe
+  variables
+    aux: numero
+    termine: boolean
+    rmax: numero
+    cantmax: numero
+  comenzar
+    identificar
+    repetir 10
+      Random(aux,1,4)
+      si aux=1
+        EnviarMensaje(V,r1)
+      sino
+        si aux=2
+          EnviarMensaje(V,r2)
+        sino
+          si aux=3
+            EnviarMensaje(V,r3)
+          sino
+            EnviarMensaje(V,r4)
+      RecibirMensaje(termine,*)  
+    cortar
+    calcularmax (rmax,cantmax)
+    InformarGanador (rmax)
+    Informar (rmax)
+    Informar (cantmax)
+  fin
+  robot robot1
+  variables
+    ok:boolean
+    miAvenida: numero
+    id: numero
+    entradas: numero
+    gane: boolean
+  comenzar 
+    RecibirMensaje(id,jefecito)
+    miAvenida:= PosAv
+    entradas:=0
+    RecibirMensaje (ok,jefecito)
+    mientras ok=V
+      LimpiarCalle
+      Informar('Ya limpie',id)
+      Pos (miAvenida,1)
+      entradas:=entradas+1
+      EnviarMensaje (V,jefecito)
+      RecibirMensaje (ok,jefecito)
+    EnviarMensaje(id,jefecito)
+    EnviarMensaje(entradas,jefecito)
+    RecibirMensaje (gane,jefecito)
+    si gane=V
+      Pos(50,50)
+  fin
+variables
+  r1: robot1
+  r2: robot1
+  r3: robot1
+  r4: robot1
+  jefecito: jefe
+comenzar
+  AsignarArea(r1, ciudad)
+  AsignarArea(r1, area1)
+  AsignarArea(r2, ciudad)
+  AsignarArea(r2, area2)
+  AsignarArea(r3, ciudad)
+  AsignarArea(r3, area3)
+  AsignarArea(r4, ciudad)
+  AsignarArea(r4, area4)
+  AsignarArea(jefecito, ciudad)
+  AsignarArea(jefecito, areaJefe)
+  Iniciar(r1, 25,1)
+  Iniciar(r2, 30,1)
+  Iniciar(r3, 35,1)
+  Iniciar(r4, 40,1)
+  Iniciar(jefecito, 1,1)
+fin

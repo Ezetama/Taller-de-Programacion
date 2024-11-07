@@ -1,0 +1,131 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso identificar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+  proceso mandarEsquina (E c: numero; E a: numero)
+  comenzar
+    EnviarMensaje(a,r1)
+    EnviarMensaje(c,r1)
+    EnviarMensaje(a,r2)
+    EnviarMensaje(c,r2)
+    EnviarMensaje(a,r3)
+    EnviarMensaje(c,r3)
+    EnviarMensaje(a,r4)
+    EnviarMensaje(c,r4)
+    EnviarMensaje(V,r1)
+    EnviarMensaje(V,r2)
+    EnviarMensaje(V,r3)
+    EnviarMensaje(V,r4)
+    
+  fin
+  proceso cortar
+  comenzar
+    EnviarMensaje(V,r1)
+    EnviarMensaje(V,r2)
+    EnviarMensaje(V,r3)
+    EnviarMensaje(V,r4)
+  fin
+  
+areas
+  ciudad: AreaPC (2,2,10,10)
+  area1: AreaP (1,1,1,1)
+  area2: AreaP (2,1,2,1)
+  area3: AreaP (3,1,3,1)
+  area4: AreaP (4,1,4,1)
+  area5: AreaP (5,1,5,1)
+robots
+  robot robot1
+  variables
+    id: numero
+    miCalle: numero
+    miAvenida: numero
+    calleLaburo: numero
+    avenidaLaburo: numero
+    laburen: boolean
+    cantF: numero
+  comenzar
+    RecibirMensaje(id,jefecito)
+    miCalle:= PosCa
+    miAvenida:= PosAv
+    cantF:=0
+    RecibirMensaje(avenidaLaburo,jefecito)
+    RecibirMensaje(calleLaburo,jefecito)
+    RecibirMensaje(laburen,jefecito)
+    mientras laburen
+      BloquearEsquina(avenidaLaburo,calleLaburo)
+      Pos(avenidaLaburo,calleLaburo)
+      si HayFlorEnLaEsquina
+        tomarFlor
+        cantF:=cantF+1
+      sino
+        laburen:=F
+      Pos(miAvenida,miCalle)
+      LiberarEsquina(avenidaLaburo,calleLaburo)
+    EnviarMensaje(id,jefecito)
+    EnviarMensaje(cantF,jefecito)
+  fin
+  
+  robot jefe
+  variables
+    c: numero
+    a: numero
+    ok: boolean  
+    id: numero
+    max: numero
+    cant: numero
+    idMax: numero
+  comenzar
+    identificar
+    Random(c,2,10)
+    Random(a,2,10)
+    mandarEsquina(c,a)
+    max:=0
+    repetir 4
+      RecibirMensaje(id,*)
+      si id=1
+        RecibirMensaje(cant,r1)
+      sino
+        si id=2
+          RecibirMensaje(cant,r2)
+        sino
+          si id=3
+            RecibirMensaje(cant,r3)
+          sino
+            RecibirMensaje(cant,r4)
+      si cant>max
+        max:=cant
+        idMax:=id
+    Informar(idMax)
+  fin
+variables
+  r1: robot1
+  r2: robot1
+  r3: robot1
+  r4: robot1
+  jefecito: jefe  
+comenzar
+  AsignarArea(jefecito, area1)
+  AsignarArea(r1, ciudad)
+  AsignarArea(r1, area2)
+  AsignarArea(r2, ciudad)
+  AsignarArea(r2, area3)
+  AsignarArea(r3, ciudad)
+  AsignarArea(r3, area4)
+  AsignarArea(r4, ciudad)
+  AsignarArea(r4, area5)
+  Iniciar(jefecito, 1,1)
+  Iniciar(r1, 2,1)
+  Iniciar(r2, 3,1)
+  Iniciar(r3, 4,1)
+  Iniciar(r4, 5,1)
+fin

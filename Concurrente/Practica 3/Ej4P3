@@ -1,0 +1,125 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso identificar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+    EnviarMensaje(V,r1)
+    EnviarMensaje(V,r2)
+    EnviarMensaje(V,r3)
+    EnviarMensaje(V,r4)
+  fin
+  proceso comunicarPerdedor (E p: numero)
+  comenzar
+    si p=1
+      EnviarMensaje(V,r1)
+      EnviarMensaje(F,r2)
+      EnviarMensaje(F,r3)
+      EnviarMensaje(F,r4)
+    sino
+      si p=2
+        EnviarMensaje(V,r2)
+        EnviarMensaje(F,r1)
+        EnviarMensaje(F,r3)
+        EnviarMensaje(F,r4)
+      sino
+        si (p=3)
+          EnviarMensaje(V,r3)
+          EnviarMensaje(F,r1)
+          EnviarMensaje(F,r2)
+          EnviarMensaje(F,r4)
+        sino
+          EnviarMensaje(V,r4)
+          EnviarMensaje(F,r1)
+          EnviarMensaje(F,r2)
+          EnviarMensaje(F,r3)
+  fin
+  
+areas
+  juntar: AreaPC (10,10,10,10)
+  depositar: AreaPC (11,11,11,11)
+  area1: AreaP (1,1,1,1)
+  area2: AreaP (9,9,9,9)
+  area3: AreaP (9,10,9,10)
+  area4: AreaP (9,11,9,11)
+  area5: AreaP (9,12,9,12)
+robots
+  robot robot1
+  variables
+    id: numero
+    miCalle:numero
+    miAvenida: numero
+    perdedor: boolean
+    ok:boolean
+  comenzar
+    miAvenida:= PosAv
+    miCalle:= PosCa
+    RecibirMensaje(id,jefecito)
+    RecibirMensaje(ok,jefecito)
+    mientras ok
+      BloquearEsquina(10,10)
+      Pos (10,10)
+      si HayFlorEnLaEsquina
+        tomarFlor
+        BloquearEsquina(11,11)
+        Pos(11,11)
+        LiberarEsquina(10,10)
+        depositarFlor
+        Pos(miAvenida,miCalle)
+        LiberarEsquina(11,11)
+      sino
+        ok:=F
+        EnviarMensaje(id,jefecito)
+        Pos(miAvenida,miCalle)
+        LiberarEsquina(10,10)
+    RecibirMensaje(perdedor,jefecito)
+    si perdedor
+      Pos(11,11)
+      mientras HayFlorEnLaEsquina
+        tomarFlor
+  fin
+  
+  robot jefe
+  variables
+    perdedor: numero
+  comenzar
+    identificar
+    repetir 4
+      RecibirMensaje(perdedor,*)
+    Informar (perdedor)
+    comunicarPerdedor (perdedor)
+  fin
+  
+variables
+  jefecito: jefe
+  r1: robot1
+  r2: robot1
+  r3: robot1
+  r4: robot1
+comenzar
+  AsignarArea(r1, juntar)
+  AsignarArea(r1, depositar)
+  AsignarArea(r1, area2)
+  AsignarArea(r2, juntar)
+  AsignarArea(r2, depositar)
+  AsignarArea(r2, area3)
+  AsignarArea(r3, juntar)
+  AsignarArea(r3, depositar)
+  AsignarArea(r3, area4)
+  AsignarArea(r4, juntar)
+  AsignarArea(r4, depositar)
+  AsignarArea(r4, area5)
+  AsignarArea(jefecito, area1)
+  Iniciar(jefecito, 1,1)
+  Iniciar(r1, 9,9)
+  Iniciar(r2, 9,10)
+  Iniciar(r3, 9,11)
+  Iniciar(r4, 9,12)
+fin

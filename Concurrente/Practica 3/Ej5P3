@@ -1,0 +1,100 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso Identificar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+    EnviarMensaje(4,r4)
+  fin
+areas
+  fuente: AreaPC (11,11,11,11)
+  a1: AreaP (4,1,4,100)
+  a2: AreaP (6,1,6,100)
+  a3: AreaP (8,1,8,100)
+  a4: AreaP (10,1,10,100)
+  aJefe: AreaP (1,1,1,1)
+robots
+  robot robot1
+  variables
+    id: numero
+    pasos: numero
+    miAvenida: numero
+    CalleActual: numero
+    ok: boolean
+  comenzar
+    CalleActual:=1
+    miAvenida:=PosAv
+    RecibirMensaje(id, jefecito)
+    ok:=V
+    mientras (ok=V)
+      BloquearEsquina(11,11)
+      Pos (11,11)
+      si ((HayFlorEnLaEsquina)&(CalleActual<>100))
+        tomarFlor
+        Pos (miAvenida,CalleActual)
+        LiberarEsquina(11,11)
+        depositarFlor
+        mover
+        CalleActual:=CalleActual+1
+      sino
+        ok:=F
+        Informar (CalleActual)
+        Pos (miAvenida,CalleActual)
+        LiberarEsquina(11,11)
+        EnviarMensaje(id,jefecito)
+        EnviarMensaje(CalleActual,jefecito)
+  fin
+  robot jefe
+  variables
+    max: numero
+    rmax: numero
+    id: numero
+    cant: numero
+  comenzar
+    Identificar
+    max:=0
+    repetir 4
+      RecibirMensaje(id,*)
+      si id=1
+        RecibirMensaje(cant,r1)
+      sino
+        si id=2
+          RecibirMensaje(cant,r2)
+        sino
+          si id=3
+            RecibirMensaje(cant,r3)
+          sino
+            RecibirMensaje(cant,r4)
+      si (cant>max)
+        max:=cant
+        rmax:=id
+    Informar (rmax)   
+  fin  
+variables
+  r1: robot1
+  r2: robot1
+  r3: robot1
+  r4: robot1
+  jefecito: jefe
+comenzar
+  AsignarArea(r1, a1)
+  AsignarArea(r1, fuente)
+  AsignarArea(r2, a2)
+  AsignarArea(r2, fuente)
+  AsignarArea(r3, a3)
+  AsignarArea(r3, fuente)
+  AsignarArea(r4, a4)
+  AsignarArea(r4, fuente)
+  AsignarArea(jefecito, aJefe)
+  Iniciar(r1, 4,1)
+  Iniciar(r2, 6,1)
+  Iniciar(r3, 8,1)
+  Iniciar(r4, 10,1)
+  Iniciar(jefecito, 1,1)
+fin

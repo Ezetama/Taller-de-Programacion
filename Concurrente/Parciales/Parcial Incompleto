@@ -1,0 +1,90 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso identificarEquipos
+  comenzar
+    EnviarMensaje (1,r1)
+    EnviarMensaje (1,r2)
+    EnviarMensaje (2,k1)
+    EnviarMensaje (2,k2)
+  fin
+  
+  proceso dejarFlores (E cantF: numero)  
+  variables
+    miCalle: numero
+    miAvenida: numero  
+  comenzar
+    miCalle:=PosCa
+    miAvenida:=PosAv
+    repetir cantF
+      BloquearEsquina (20,20)
+      Pos (20,20)
+      depositarFlor
+      Pos (miAvenida,miCalle)
+      LiberarEsquina (20,20)
+  fin
+  proceso juntarFlores (ES cantF: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantF:=cantF+1
+  fin
+  proceso recorrerTramo(ES cantF: numero)
+  comenzar
+    repetir 10
+      juntarFlores (cantF)
+      mover
+    derecha
+    repetir 10
+      juntarFlores (cantF)
+      mover
+    juntarFlores (cantF)
+  fin
+areas
+  ciudad: AreaC (1,1,100,100)
+robots
+  robot robot2
+  variables
+    equipo: numero
+    cantTotal: numero
+    CantF: numero
+  comenzar
+    RecibirMensaje (equipo,jefecito)
+    si equipo=1
+      RecibirMensaje (cantTotal,r1)
+    sino
+      RecibirMensaje (cantTotal,k1)
+      
+  fin
+  
+  robot robot1
+  variables
+    equipo: numero
+    cantF:numero
+  comenzar
+    RecibirMensaje (equipo,jefecito)
+    recorrerTramo (cantF)
+    si equipo=1
+      EnviarMensaje (cantF,r2)
+    sino
+      EnviarMensaje (cantF,k2)
+    dejarFlores (cantF)
+  fin
+  robot jefe
+  comenzar
+    identificarEquipos
+  fin
+variables
+  r1: robot1
+  r2: robot2
+  k1: robot1
+  k2: robot2
+  jefecito: jefe
+comenzar
+  AsignarArea(R_info, ciudad)
+  Iniciar(R_info, 1,1)
+fin

@@ -1,0 +1,145 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso identificarEquipos
+  comenzar
+    EnviarMensaje (1,r1)
+    EnviarMensaje (1,r2)
+    EnviarMensaje (2,k1)
+    EnviarMensaje (2,k2)
+  fin
+  
+  proceso dejarFlores (E cantF: numero)  
+  variables
+    miCalle: numero
+    miAvenida: numero  
+  comenzar
+    miCalle:=PosCa
+    miAvenida:=PosAv
+    repetir cantF
+      BloquearEsquina (20,20)
+      Pos (20,20)
+      depositarFlor
+      Pos (miAvenida,miCalle)
+      LiberarEsquina (20,20)
+  fin
+  proceso juntarFlores (ES cantF: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantF:=cantF+1
+  fin
+  proceso recorrerTramo(ES cantF: numero; E ok: boolean)
+  variables
+    num: numero
+  comenzar
+    si ok=V
+      num:=10
+    sino
+      num:=9
+    repetir num
+      juntarFlores (cantF)
+      mover
+    derecha
+    repetir num
+      juntarFlores (cantF)
+      mover
+    juntarFlores (cantF)
+  fin
+areas
+  equipor1: AreaP (1,1,1,11)
+  equipor12: AreaP (2,11,11,11)
+  equipor2: AreaP (11,1,11,10)
+  equipor22: AreaP (2,1,11,1)
+  equipok1: AreaP (13,1,13,11)
+  equipok12: AreaP (14,11,23,11)
+  equipok2: AreaP (23,1,23,10)
+  equipok22: AreaP (14,1,23,1)
+  areaJefe: AreaP (30,1,30,1)
+  deposito: AreaPC (20,20,20,20)
+robots
+  robot robot2
+  variables
+    equipo: numero
+    cantTotal: numero
+    cantF: numero
+  comenzar
+    RecibirMensaje (equipo,jefecito)
+    si equipo=1
+      RecibirMensaje (cantTotal,r1)
+    sino
+      RecibirMensaje (cantTotal,k1)
+    repetir 2
+      derecha
+    recorrerTramo(cantF,F)  
+    cantTotal:=cantTotal+cantF
+    dejarFlores(cantF)
+    EnviarMensaje (equipo,jefecito)
+    EnviarMensaje (cantTotal,jefecito)
+  fin
+  
+  robot robot1
+  variables
+    equipo: numero
+    cantF:numero
+  comenzar
+    RecibirMensaje (equipo,jefecito)
+    recorrerTramo (cantF,V)
+    si equipo=1
+      EnviarMensaje (cantF,r2)
+    sino
+      EnviarMensaje (cantF,k2)
+    dejarFlores (cantF)
+  fin
+  robot jefe
+  variables
+    equipo: numero
+    ganador: numero
+    cant: numero
+    cantMax: numero
+  comenzar
+    identificarEquipos
+    cantMax:=-1
+    repetir 2
+      RecibirMensaje (equipo,*)
+      si equipo=1
+        RecibirMensaje(cant,r2)
+      sino
+        RecibirMensaje (cant,k2)
+      si cant>cantMax
+        cantMax:=cant
+        ganador:=equipo
+    Informar (cantMax)
+    Informar (ganador)
+  fin
+  
+variables
+  r1: robot1
+  r2: robot2
+  k1: robot1
+  k2: robot2
+  jefecito: jefe
+comenzar
+  AsignarArea(r1, equipor1)
+  AsignarArea(r1, equipor12)
+  AsignarArea(r1, deposito)
+  AsignarArea(r2, equipor2)
+  AsignarArea(r2, equipor22)
+  AsignarArea(r2, deposito)
+  AsignarArea(k1, equipok1)
+  AsignarArea(k1, equipok12)
+  AsignarArea(k1, deposito)
+  AsignarArea(k2, equipok2)
+  AsignarArea(k2, equipok22)
+  AsignarArea(k2, deposito)
+  AsignarArea(jefecito, areaJefe)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 11,10)
+  Iniciar(k1, 13,1)
+  Iniciar(k2, 23,10)
+  Iniciar(jefecito, 30,1)
+fin

@@ -1,0 +1,150 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso calcularMax
+  variables
+    id: numero
+    idMax: numero
+    cant: numero
+    cantMax: numero
+  comenzar
+    repetir 3
+      RecibirMensaje (id,*)
+      si id=1
+        RecibirMensaje (cant,rf1)
+      sino
+        si id=2
+          RecibirMensaje (cant,rf2)
+        sino
+          RecibirMensaje (cant,rp1)
+      si cant>cantMax
+        idMax:=id
+        cantMax:=cant
+    Informar (id)
+  fin
+  proceso AvisarCalle (E calle: numero)
+  comenzar
+    EnviarMensaje (calle,rf1)
+    EnviarMensaje (calle,rf2)
+  fin
+  proceso recorrerCalle (ES cantP: numero; E miCalle: numero)
+  comenzar
+    derecha
+    repetir 99
+      juntarPapeles (cantP)
+      si (PosAv+1=6)
+        BloquearEsquina(6,miCalle)
+      si (PosAv+1=11)
+        BloquearEsquina(11,miCalle)
+      mover
+      si (PosAv-1=6)
+        LiberarEsquina(6,miCalle)
+      si (PosAv-1=11)
+        LiberarEsquina(11,miCalle)
+  fin
+  proceso identificar
+  comenzar
+    EnviarMensaje(1,rf1)
+    EnviarMensaje(2,rf2)
+    EnviarMensaje(3,rp1)
+  fin
+  proceso recorrerAvenida (ES cantF: numero; E miAvenida: numero)
+  variables
+    esqB: numero
+  comenzar
+    RecibirMensaje(esqB,rp1)
+    repetir 99
+      juntarFlores(cantF)
+      si (PosCa+1=esqB)
+        BloquearEsquina(miAvenida,esqB)
+      mover
+      si (PosCa-1=esqB)
+        LiberarEsquina(miAvenida,esqB)
+    juntarFlores (cantF)    
+  fin
+  proceso juntarFlores (ES cantF: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantF:=cantF+1
+  fin
+  proceso juntarPapeles (ES cantP: numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      cantP:=cantP+1
+  fin
+areas
+  area1f1: AreaP (6,1,6,1)
+  area2f1: AreaP (6,21,6,100)
+  area1f2: AreaP (11,1,11,1)
+  area2f2: AreaP (11,21,11,100)
+  areap1: AreaP (2,1,2,1)
+  area2p1: AreaP (1,2,5,20)
+  area3p1: AreaP (12,2,100,20)
+  areaConflicto: AreaPC (6,2,11,20)
+  areaJefe: AreaP (1,1,1,1)
+robots
+  robot florero
+  variables
+    id: numero
+    cantF: numero
+    miAvenida: numero
+  comenzar
+    RecibirMensaje (id,jefecito)
+    miAvenida:=PosAv
+    cantF:=0
+    recorrerAvenida (cantF,miAvenida)
+    EnviarMensaje (id,jefecito)
+    EnviarMensaje (cantF,jefecito)
+  fin
+  robot papelero
+  variables
+    id: numero
+    cantP: numero
+    calle: numero
+  comenzar
+    RecibirMensaje (id,jefecito)
+    cantP:=0
+    RecibirMensaje(calle,jefecito)
+    AvisarCalle (calle)
+    Pos(1,calle)
+    recorrerCalle (cantP,calle)
+    EnviarMensaje (id,jefecito)
+    EnviarMensaje (cantP,jefecito)
+  fin
+  robot jefe
+  variables
+    calleA: numero
+  comenzar
+    identificar
+    Random(calleA,2,20)
+    EnviarMensaje (calleA,rp1)
+    calcularMax
+  fin
+variables
+  rf1: florero
+  rf2: florero
+  rp1: papelero
+  jefecito: jefe
+comenzar
+  AsignarArea(rf1, area1f1)
+  AsignarArea(rf1, area2f1)
+  AsignarArea(rf1, areaConflicto)
+  AsignarArea(rf2, area1f2)
+  AsignarArea(rf2, area2f2)
+  AsignarArea(rf2, areaConflicto)
+  AsignarArea(rp1, areap1)
+  AsignarArea(rp1, area2p1)
+  AsignarArea(rp1, area3p1)
+  AsignarArea(rp1, areaConflicto)
+  AsignarArea(jefecito, areaJefe)
+  Iniciar(jefecito, 1,1)
+  Iniciar(rf1, 6,1)
+  Iniciar(rf2, 11,1)
+  Iniciar(rp1, 2,1)
+fin

@@ -1,0 +1,120 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso juntarFlores(ES cantF: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantF:=cantF+1
+  fin
+  proceso recorrerAvenida (ES cantF: numero; E calle: numero)
+  comenzar
+    repetir 60
+      juntarFlores (cantF)
+      si PosCa+1=calle
+        BloquearEsquina(6,calle)
+      mover
+      si PosCa=calle
+        Informar (777)
+        EnviarMensaje (1,jefecito)
+      si PosCa-1=calle
+        LiberarEsquina (6,calle)
+    juntarFlores(cantF)
+  fin
+  proceso recorrerCalle (ES cantF: numero; E miCalle: numero)
+  comenzar
+    Pos (1,miCalle)
+    derecha
+    repetir 4
+      juntarFlores (cantF)
+      mover
+    juntarFlores (cantF)
+    BloquearEsquina (6,miCalle)
+    mover
+    EnviarMensaje (2,jefecito)
+    juntarFlores (cantF)
+    mover
+    LiberarEsquina (6,miCalle)
+    repetir 54
+      juntarFlores (cantF)
+      mover
+    juntarFlores (cantF)
+  fin
+  proceso identificar
+  comenzar
+    EnviarMensaje (1,r1)
+    EnviarMensaje (2,r2)
+  fin
+areas
+  areaJefe: AreaP (100,100,100,100)
+  arear1: AreaP(6,1,6,1)
+  arear2: AreaP(1,2,5,50)
+  areaCompartida: AreaPC (6,2,6,61)
+  arear22: AreaP (7,2,61,50)
+robots
+  robot robot1
+  variables
+    id: numero
+    calleChoque: numero
+    cantF: numero
+  comenzar
+    RecibirMensaje (id,jefecito)
+    cantF:=0
+    RecibirMensaje (calleChoque,jefecito)
+    recorrerAvenida (cantF, calleChoque)
+    EnviarMensaje (cantF,jefecito)
+  fin
+  robot robot2
+  variables
+    id: numero
+    miCalle: numero
+    cantF: numero
+  comenzar
+    RecibirMensaje (id,jefecito)
+    cantF:=0
+    RecibirMensaje (miCalle,jefecito)
+    recorrerCalle (cantF,miCalle)
+    EnviarMensaje (cantF,jefecito)
+  fin
+  robot jefe
+  variables
+    calleRandom: numero
+    ganador: numero
+    cantGanador: numero
+    perdedor: numero
+    cantPerdedor: numero
+  comenzar
+    identificar
+    Random(calleRandom,2,50)
+    EnviarMensaje (calleRandom,r2)
+    EnviarMensaje (calleRandom,r1)
+    RecibirMensaje(ganador,*)
+    si ganador=1
+      RecibirMensaje(cantGanador,r1)
+    sino
+      RecibirMensaje(cantGanador,r2)
+    RecibirMensaje(perdedor,*)
+    RecibirMensaje(cantPerdedor,*)
+    Informar(ganador)
+    Informar (cantGanador)
+    
+  fin
+variables
+  r1: robot1
+  r2: robot2
+  jefecito: jefe
+comenzar
+  AsignarArea(jefecito, areaJefe)
+  AsignarArea(r1, arear1)
+  AsignarArea(r1, areaCompartida)
+  AsignarArea(r2, arear2)
+  AsignarArea(r2, arear22)
+  AsignarArea(r2, areaCompartida)
+  Iniciar(r1, 6,1)
+  Iniciar(r2, 1,2)
+  Iniciar(jefecito, 100,100)
+fin

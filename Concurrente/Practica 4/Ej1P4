@@ -1,0 +1,127 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso identificar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+  proceso pedirFlores (E id: numero;E cant: numero; E calle: numero)
+  variables
+    ok:boolean
+  comenzar
+    EnviarMensaje (id,rj)
+    EnviarMensaje (calle+1,rj)
+    EnviarMensaje (cant,rj)
+    RecibirMensaje (ok,rj)
+  fin
+  proceso depositarYAvanzar (ES cant: numero;ES calleActual: numero)
+  comenzar
+    repetir cant
+      depositarFlor
+      si PosCa<100
+        mover
+    calleActual:=PosCa
+    cant:= 0
+  fin
+  proceso avisar (E id: numero)
+  comenzar
+    si id=1
+      EnviarMensaje (V,r1)
+    sino
+      si id=2
+        EnviarMensaje (V,r2)
+      sino
+        EnviarMensaje (V,r3)
+  fin
+  proceso ponerFlores (E miAv: numero;E miCa: numero; ES terminados: numero)
+  variables
+    id:numero
+    calle: numero
+    cant: numero
+  comenzar
+    RecibirMensaje (id,*)
+    si id=0
+      terminados:= terminados+1
+    sino
+      si id=1
+        RecibirMensaje (calle,r1)
+        RecibirMensaje (cant,r1)
+      sino
+        si id=2
+          RecibirMensaje (calle,r2)
+          RecibirMensaje (cant,r2)
+        sino
+          RecibirMensaje (calle,r3)
+          RecibirMensaje (cant,r3)
+      Pos(id,calle)
+      repetir cant
+        depositarFlor
+      Pos (miAv,miCa)
+      avisar (id)
+  fin
+areas
+  area1: AreaPC (1,1,1,100)
+  area2: AreaPC(2,1,2,100)
+  area3: AreaPC (3,1,3,100)
+  areaServer: AreaP (100,100,100,100)
+robots
+  robot servidor
+  variables
+    miCalle: numero
+    miAvenida: numero
+    terminados: numero
+  comenzar
+    identificar
+    miCalle:= PosCa
+    miAvenida:= PosAv
+    terminados:=0
+    mientras terminados<>3
+      ponerFlores (miAvenida,miCalle,terminados)
+  fin
+  
+  robot cliente
+  variables
+    id: numero
+    cant: numero
+    calleActual:numero
+    miAvenida:numero
+  comenzar
+    RecibirMensaje (id, rj)
+    miAvenida:=PosAv
+    calleActual:=PosCa
+    cant:=0
+    mientras calleActual<100
+      si cant=0
+        Random(cant,1,4)
+        pedirFlores (id,cant,calleActual)
+        mover
+        repetir cant
+          tomarFlor
+        Pos (miAvenida,calleActual)
+      depositarYAvanzar (cant,calleActual)
+    EnviarMensaje (0,rj)
+  fin
+variables
+  r1: cliente
+  r2: cliente
+  r3: cliente
+  rj: servidor
+comenzar
+  AsignarArea(r1, area1)
+  AsignarArea(r2, area2)
+  AsignarArea(r3, area3)
+  AsignarArea(rj, area1)
+  AsignarArea(rj, area2)
+  AsignarArea(rj, area3)
+  AsignarArea(rj, areaServer)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 2,1)
+  Iniciar(r3, 3,1)
+  Iniciar(rj, 100,100)
+fin

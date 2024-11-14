@@ -1,0 +1,116 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso depositarPapeles (E avenida: numero; E calle: numero)
+  comenzar
+    BloquearEsquina (50,50)
+    Pos (50,50)
+    repetir 5
+      depositarPapel
+    Pos (avenida,calle)
+    LiberarEsquina (50,50)
+  fin
+  proceso juntarycomparar (E cant: numero; ES ok: boolean)
+  variables
+    aux: numero
+  comenzar
+    aux:=0
+    mientras ((HayPapelEnLaEsquina) & (aux<>cant))
+      tomarPapel
+      aux:=aux+1
+    si aux=cant
+      ok:=V
+    sino
+      ok:=F
+  fin
+  proceso buscarPapeles (E cant: numero; ES intentos: numero; E miAvenida: numero; E miCalle: numero)
+  variables
+    ok: boolean
+  comenzar
+    BloquearEsquina (50,50)
+    Pos (50,50)
+    juntarycomparar (cant,ok)
+    si ok=F
+      intentos:=intentos+1
+    Pos (miAvenida,miCalle)
+    LiberarEsquina (50,50)
+    si ok=V
+      repetir cant
+        depositarPapel
+  fin
+  
+areas
+  areac1: AreaP (11,1,11,1)
+  areac2: AreaP (12,1,12,1)
+  deposito: AreaPC (50,50,50,50)
+  campo1: AreaP (5,1,5,100)
+  campo2: AreaP (10,1,10,100)
+robots
+  robot consumidor 
+  variables
+    cant: numero
+    intentos: numero
+    corte: boolean
+    miAvenida: numero
+    miCalle: numero
+  comenzar
+    miAvenida:= PosAv
+    miCalle:= PosCa
+    corte:=V
+    intentos:=0
+    mientras corte=V
+      Random(cant,2,5)
+      buscarPapeles (cant,intentos,miAvenida,miCalle)
+      si intentos=8
+        corte:=F
+  fin
+  robot productor
+  variables
+    miAvenida: numero
+    cantP: numero
+    calleActual: numero
+  comenzar
+    miAvenida:=PosAv
+    cantP:=0
+    mientras PosCa<100
+      mientras HayPapelEnLaEsquina
+        si cantP=5
+          calleActual:=PosCa
+          depositarPapeles (miAvenida,calleActual)
+          cantP:=0
+        sino
+          tomarPapel
+          cantP:=cantP+1
+      mover
+    mientras HayPapelEnLaEsquina
+      si cantP=5
+        calleActual:=PosCa
+        depositarPapeles (miAvenida,calleActual)
+        cantP:=0
+      sino
+        tomarPapel
+        cantP:=cantP+1
+  fin
+variables
+  c1: consumidor
+  c2: consumidor
+  p1: productor
+  p2: productor
+comenzar
+  AsignarArea(c1, areac1)
+  AsignarArea(c1, deposito)
+  AsignarArea(c2, areac2)
+  AsignarArea(c2, deposito)
+  AsignarArea(p1, campo1)
+  AsignarArea(p1, deposito)
+  AsignarArea(p2, campo2)
+  AsignarArea(p2, deposito)
+  Iniciar(c1, 11,1)
+  Iniciar(c2, 12,1)
+  Iniciar(p1, 5,1)
+  Iniciar(p2, 10,1)
+fin

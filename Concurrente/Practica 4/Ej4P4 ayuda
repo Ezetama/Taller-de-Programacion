@@ -1,0 +1,120 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso identificar
+  comenzar
+    EnviarMensaje (1,r1)
+    EnviarMensaje (2,r2)
+  fin
+  proceso mandarTarea
+  variables
+    tarea: numero
+    laburante: numero
+    calle: numero
+    avenida: numero
+  comenzar
+    Random (tarea,1,3)
+    Random (laburante,1,2)
+    Random (calle,2,100)
+    Random (avenida,2,100)
+    si laburante=1
+      EnviarMensaje (tarea,r1)
+      EnviarMensaje (avenida,r1)
+      EnviarMensaje (calle,r1)
+    sino
+      EnviarMensaje (tarea,r2)
+      EnviarMensaje (avenida,r2)
+      EnviarMensaje (calle,r2)
+  fin
+  proceso cortarEjecucion
+  comenzar
+    EnviarMensaje (4,r1)
+    EnviarMensaje (4,r2)
+  fin
+  proceso juntarFlores (ES cantF: numero)
+  comenzar
+    mientras (HayFlorEnLaEsquina)
+      tomarFlor
+      cantF:=cantF+1
+  fin
+  proceso juntarPapeles (ES cantP: numero)
+  comenzar
+    mientras HayPapelEnLaEsquina
+      tomarPapel
+      cantP:=cantP+1
+  fin  
+  proceso vaciarBolsa (ES cantF: numero; ES cantP: numero)
+  comenzar
+    repetir cantF
+      depositarFlor
+    repetir cantP
+      depositarPapel
+    cantF:=0
+    cantP:=0
+  fin 
+  proceso hacerTarea (E tarea: numero; E miAvenida: numero; E miCalle: numero; ES cantP: numero; ES cantF: numero)
+  variables
+    av: numero
+    ca: numero
+  comenzar
+    RecibirMensaje (av,jefectio)
+    RecibirMensaje (ca,jefectio)
+      BloquearEsquina (av,ca)
+      Pos(av,ca)
+    si (tarea=1)
+      juntarFlores (cantF)
+    sino
+      si (tarea=2)
+        juntarPapeles (cantP)
+      sino
+        vaciarBolsa (cantF,cantP)
+    Pos(miAvenida,miCalle)
+    LiberarEsquina (av,ca)    
+  fin
+areas
+  areaJ: AreaP (1,1,1,1)
+  areaR: AreaPC (2,2,100,100)
+robots
+  robot jefe
+  variables
+  comenzar
+    identificar
+    repetir 10
+      mandarTarea
+    cortarEjecucion
+  fin
+  robot robot1
+  variables
+    id: numero
+    tarea: numero
+    miAvenida: numero
+    miCalle: numero
+    cantP: numero
+    cantF: numero
+  comenzar
+    RecibirMensaje (id,jefecito)
+    cantP:=0
+    cantF:=0
+    miAvenida:= PosAv
+    miCalle:= PosCa
+    RecibirMensaje (tarea,jefecito)
+    mientras (tarea<>4)
+      hacerTarea (tarea,MiAvenida,miCalle,cantP,cantF)
+      RecibirMensaje (tarea,jefecito)
+  fin
+variables
+  r1: robot1
+  r2: robot1
+  jefecito: jefe
+comenzar
+  AsignarArea(jefecito, areaJ)
+  AsignarArea(r1,areaR)
+  AsignarArea(r2,areaR)
+  Iniciar(jefecito, 1,1)
+  Iniciar(r1, 2,1)
+  Iniciar(r2, 3,1)
+fin

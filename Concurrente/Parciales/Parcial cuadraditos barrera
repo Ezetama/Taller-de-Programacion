@@ -1,0 +1,104 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso identificar
+  comenzar
+    EnviarMensaje (1,r1)
+    EnviarMensaje (2,r2)
+    EnviarMensaje (3,r3)
+  fin
+  proceso juntarFlores (ES cantF: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantF:=cantF+1
+  fin
+  
+  proceso hacerCuadrado(E lado: numero; ES cantF: numero)
+  comenzar
+    repetir 4
+      repetir lado
+        juntarFlores (cantF)
+        mover
+      derecha
+    juntarFlores(cantF)
+    repetir lado+1
+      mover
+  fin
+  proceso sincronizarse (E id: numero)
+  variables
+    ok: boolean
+  comenzar 
+    si id=1
+      EnviarMensaje(V,r2)
+      EnviarMensaje(V,r3)
+    sino
+      si id=2
+        EnviarMensaje(V,r1)
+        EnviarMensaje(V,r3)
+      sino
+        EnviarMensaje(V,r1)
+        EnviarMensaje(V,r2)
+    RecibirMensaje(ok,*)
+    RecibirMensaje(ok,*)
+  fin
+  proceso depositarFlores (E cantF: numero; E miAvenida: numero; E miCalle: numero)
+  comenzar
+    repetir cantF
+      BloquearEsquina (50,50)
+      Pos (50,50)
+      depositarFlor
+      Pos(miAvenida,miCalle)
+      LiberarEsquina(50,50)
+  fin
+areas
+  areaJefe: AreaP (51,1,51,1)
+  area1: AreaP (1,1,6,25)
+  area2: AreaP (8,1,13,25)
+  area3: AreaP (15,1,20,25)
+  deposito: AreaPC (50,50,50,50)
+robots
+  robot robot1
+  variables
+    id: numero
+    lado:numero
+    cantF: numero
+    miAvenida: numero
+    miCalle: numero
+  comenzar
+    RecibirMensaje (id, jefecito)
+    miAvenida:=PosAv
+    miCalle:= PosCa
+    cantF:=0
+    repetir 5
+      Random (lado,1,5)
+      hacerCuadrado(lado,cantF)
+      sincronizarse (id)
+    depositarFlores (cantF,miAvenida,miCalle)
+  fin
+  robot jefe
+  comenzar
+    identificar
+  fin
+variables
+  r1: robot1
+  r2: robot1
+  r3: robot1
+  jefecito: jefe
+comenzar
+  AsignarArea(jefecito, areaJefe)
+  AsignarArea(r1, area1)
+  AsignarArea(r1, deposito)
+  AsignarArea(r2, area2)
+  AsignarArea(r2, deposito)
+  AsignarArea(r3, area3)
+  AsignarArea(r3, deposito)
+  Iniciar(jefecito, 51,1)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 8,1)
+  Iniciar(r3, 15,1)
+fin

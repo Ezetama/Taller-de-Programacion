@@ -1,0 +1,104 @@
+{Tres robotts deben realizar 5 cuadrados cada uno, como se ejemplifica en la figura, juntando todas las flores que encuentran a su paso. El tamaño de cada cuadrado será determinado aleatoriamente entre 1 y 5 por cada robot. Al finalizar cada cuadrado, deberán esperar que los otros robots también finalicen para avanzar hacia el siguiente cuadrado, siguiendo el modelo de sincronización barrera sin coordinador. Una vez completados los 5 cuadrados, deberán depositar de a una todas las flores encontradas en la esquina (50,50).
+Los robotts inician en las esquinas (1,1) y (8,1), y (15,1). Existe un robott coordinador, que inicia en (51,1), cuya única tarea es asignar identificadores a cada robott.}
+
+programa ejemplo
+procesos
+  proceso tomarFlores(ES cantF: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantF:=cantF+1
+  fin
+  proceso hacerCuadrado (ES cantF: numero)
+  variables
+    lado: numero
+  comenzar
+    Random(lado,1,5)
+    repetir 4
+      repetir lado
+        tomarFlores(cantF)
+        mover
+      derecha
+    tomarFlores (cantF)
+    repetir (lado+1)
+      mover
+  fin
+  proceso sincronizarse (E id: numero)
+  variables
+    ok: boolean
+  comenzar
+    si id=1
+      EnviarMensaje (V,r2)
+      EnviarMensaje (V,r3)
+      RecibirMensaje (ok,r2)
+      RecibirMensaje (ok,r3)
+    sino
+      si id=2
+        EnviarMensaje (V,r1)
+        EnviarMensaje (V,r3)
+        RecibirMensaje (ok,r1)
+        RecibirMensaje (ok,r3)
+      sino
+        EnviarMensaje (V,r1)
+        EnviarMensaje (V,r2)
+        RecibirMensaje (ok,r1)
+        RecibirMensaje (ok,r2)
+  fin
+  proceso dejarFlores (E calle: numero; E avenida: numero;E cantF: numero)
+  comenzar
+    Informar (cantF)
+    repetir cantF
+      BloquearEsquina (50,50)
+      Pos(50,50)
+      depositarFlor
+      Pos (avenida,calle)
+      LiberarEsquina (50,50)
+  fin
+  proceso identificarse (ES miAvenida: numero; ES id: numero)
+  comenzar
+    miAvenida:= PosAv
+    si miAvenida=1
+      id:=1
+    sino
+      si miAvenida=8
+        id:=2
+      sino
+        id:=3
+  fin
+  
+areas
+  area1: AreaP (1,1,6,40)
+  area2: AreaP (8,1,13,40)
+  area3: AreaP (15,1,22,40)
+  deposito: AreaC (50,50,50,50)
+robots
+  robot robot1
+  variables
+    cantF: numero
+    miAvenida: numero
+    miCalle: numero
+    id: numero
+  comenzar
+    identificarse (miAvenida,id)
+    cantF:=0
+    repetir 5
+      hacerCuadrado (cantF)
+      sincronizarse (id)
+    miCalle:= PosCa
+    dejarFlores(miCalle,miAvenida,cantF)
+  fin
+variables
+  r1: robot1
+  r2: robot1
+  r3: robot1
+comenzar
+  AsignarArea(r1, area1)
+  AsignarArea(r1, deposito)
+  AsignarArea(r2, area2)
+  AsignarArea(r2, deposito)
+  AsignarArea(r3, area3)
+  AsignarArea(r3, deposito)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 8,1)
+  Iniciar(r3, 15,1)
+fin

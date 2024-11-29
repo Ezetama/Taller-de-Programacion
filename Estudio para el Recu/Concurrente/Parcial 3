@@ -1,0 +1,133 @@
+{Bienvenidos al entorno CMRE.
+Lo siguiente es un código de ejemplo que implementa un
+proceso que recibe un número de avenida como parámetro,
+se posiciona en esa avenida y la recorre.}
+
+programa ejemplo
+procesos
+  proceso juntarFlores (ES cantF: numero)
+  comenzar
+    mientras HayFlorEnLaEsquina
+      tomarFlor
+      cantF:=cantF+1
+  fin
+  proceso intentoCuadrante (ES cantF: numero;E miCalle: numero; E miAvenida: numero;E id: numero)
+  variables
+    calle: numero
+    avenida: numero
+  comenzar
+    EnviarMensaje(id,jefecito)
+    RecibirMensaje (calle,jefecito)
+    RecibirMensaje (avenida,jefecito)
+    BloquearEsquina (avenida,calle)
+    Pos (avenida,calle)
+    juntarFlores (cantF)
+    Pos (miAvenida,miCalle)
+    LiberarEsquina (avenida,calle)
+  fin
+  proceso dejarFlores (ES cantF: numero; E miCalle:numero; E miAvenida: numero)
+  comenzar
+    BloquearEsquina (5,5)
+    Pos (5,5)
+    repetir cantF
+      depositarFlor
+    Pos (miAvenida,miCalle)
+    LiberarEsquina (5,5)
+    cantF:=0
+  fin
+  proceso enviarEsquinas
+  variables
+    calle: numero
+    avenida: numero
+    contador: numero
+    id: numero
+  comenzar
+    contador:=0
+    mientras contador<>3
+      RecibirMensaje (id,*)
+      si id=4
+        contador:=contador+1
+      sino
+        Random (avenida,10,30)
+        Random (calle,10,30)
+        si id=1
+          EnviarMensaje(avenida,r1)
+          EnviarMensaje(calle,r1)
+        sino
+          si id=2
+            EnviarMensaje(avenida,r2)
+            EnviarMensaje(calle,r2)
+          sino
+            EnviarMensaje(avenida,r3)
+            EnviarMensaje(calle,r3)
+  fin
+  proceso tomarEInformar (ES cantF: numero)
+  comenzar
+    Pos (5,5)
+    juntarFlores (cantF)
+    Informar (cantF)
+  fin
+  
+  proceso identificar
+  comenzar
+    EnviarMensaje(1,r1)
+    EnviarMensaje(2,r2)
+    EnviarMensaje(3,r3)
+  fin
+areas
+  area1: AreaP (1,1,1,1)
+  area2: AreaP (2,1,2,1)
+  area3: AreaP (3,1,3,1)
+  areaJefe: AreaP (5,1,5,1)
+  cuadrante: AreaPC (10,10,30,30)
+  deposito: AreaPC (5,5,5,5)
+robots
+  robot robot1
+  variables
+    id: numero
+    repeticiones: numero
+    cantF: numero
+    miCalle: numero
+    miAvenida: numero
+  comenzar
+    RecibirMensaje (id,jefecito)
+    cantF:=0
+    Random(repeticiones,2,5)
+    miCalle:= PosCa
+    miAvenida:= PosAv
+    repetir repeticiones
+      intentoCuadrante (cantF,miCalle,miAvenida,id)
+      dejarFlores (cantF,miCalle,miAvenida)
+    EnviarMensaje(4,jefecito)
+  fin
+  robot jefe
+  variables
+    cantF: numero
+  comenzar
+    identificar
+    enviarEsquinas
+    cantF:=0
+    tomarEInformar (cantF)
+  fin
+variables
+  r1: robot1
+  r2: robot1
+  r3: robot1
+  jefecito: jefe
+comenzar
+  AsignarArea(r1, area1)
+  AsignarArea(r1, deposito)
+  AsignarArea(r1, cuadrante)
+  AsignarArea(r2, area2)
+  AsignarArea(r2, deposito)
+  AsignarArea(r2, cuadrante)
+  AsignarArea(r3, area3)
+  AsignarArea(r3, deposito)
+  AsignarArea(r3, cuadrante)
+  AsignarArea(jefecito, areaJefe)
+  AsignarArea(jefecito, deposito)
+  Iniciar(r1, 1,1)
+  Iniciar(r2, 2,1)
+  Iniciar(r3, 3,1)
+  Iniciar(jefecito, 5,1)
+fin

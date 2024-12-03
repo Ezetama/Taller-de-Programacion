@@ -1,0 +1,154 @@
+program ej;
+const
+  df=10;
+type
+  persona= record
+    nombre: string;
+    edad: integer;
+    precio: real;
+  end;
+  vector= array [1..df] of persona; 
+  auto = record
+    marca: string;
+    modelo: integer;
+  end;
+  
+  lista = ^nodo;
+  nodo= record
+    elem: auto;
+    sig: lista;
+  end;
+  
+procedure sumar (var x: integer; y: integer);
+var
+  j: integer;
+begin
+  for j:= 1 to 10 do begin
+    x:= x+1;
+    y:=y+1;
+  end;
+end;
+procedure leerPersona (var p: persona);
+begin
+  writeln ('Ingrese el nombre');
+  readln (p.nombre);
+  if (p.nombre<>'juan') then begin
+    writeln ('Ingrese la edad');
+    readln (p.edad);
+    writeln ('Ingrese cuanto cuesta su celular');
+    readln (p.precio);
+  end;
+end;
+procedure imprimirPersona (p: persona);
+begin
+  writeln ('Mi nombre es: ',p.nombre,' y mi apellido es...');
+  writeln ('Mi edad es: ',p.edad);
+  writeln ('mi celular cuesta: ',p.precio:0:2);
+end;
+procedure llenarVector (var v: vector; var dl: integer);
+var
+  p: persona;
+begin
+  dl:=0;
+  leerPersona(p);
+  while ((p.nombre<>'juan') and (dl<df)) do begin
+    dl:=dl+1;
+    v[dl]:=p;
+    if (dl<>df) then
+      leerPersona(p);
+  end;
+end;
+procedure imprimirVector (v: vector; dl: integer);
+var
+  i: integer;
+begin
+  for i:= 1 to dl do begin
+    imprimirPersona (v[i])
+  end;
+end;
+procedure leerAuto (var a: auto);
+begin
+  writeln ('Ingrese la marca del auto');
+  readln (a.marca);
+  writeln ('Ingrese el modelo del auto');
+  readln (a.modelo);
+end;
+procedure imprimirAuto (a:auto);
+begin
+  writeln ('El auto es de la marca: ',a.marca);
+  writeln ('MODELO: ',a.modelo)
+end;
+
+procedure llenarLista (var l: lista);
+var
+  a: auto;
+  aux: lista;
+begin
+  leerAuto (a);
+  while (a.modelo<>2010) do begin
+    new (aux);
+    aux^.elem:=a;
+    aux^.sig:=l;
+    l:=aux;
+    leerAuto (a);
+  end;
+end;
+procedure imprimirLista (l: lista);
+begin
+  while (l<>nil) do begin
+    imprimirAuto (l^.elem);
+    l:=l^.sig;
+  end;
+end;
+procedure seleccion (var v: vector; dl: integer);
+var
+  i,j,pos: integer;
+  aux: persona;
+begin
+  for i:=  1 to dl do begin
+    pos:=i;
+    for j:= i+1 to dl do begin
+      if (v[j].precio<v[pos].precio) then begin
+        pos:=j;
+      end;
+    end;
+    aux:=v[i];
+    v[i]:=v[pos];
+    v[pos]:=aux;
+  end;
+end;
+procedure imprimirListaRecursivo (l: lista);
+begin
+  if l<>nil then begin
+    imprimirAuto(l^.elem);
+    imprimirListaRecursivo(l^.sig);
+  end;
+end;
+var
+  x,y,dl: integer;
+  juan: persona;
+  v,v2: vector;
+  l: lista;
+  
+begin
+  l:=nil;
+  x:=5;
+  y:=3;
+  sumar (x,y);
+ // writeln (x);
+ // writeln (y);
+ // writeln ('LEER PERSONA');
+ // leerPersona (juan);
+ // imprimirPersona (juan);
+ // writeln ('Leer personas hasta que se lea el nombre juan. Se guardan en un vector de 10');
+  //llenarVector (v,dl);
+  //writeln ('DESORDENADO:');
+ // imprimirVector (v,dl);
+  writeln ('Leer autos hasta que se lea uno con el modelo 2010. Se guardan en una lista');
+  llenarLista(l);
+  //imprimirLista (l);
+  imprimirListaRecursivo(l);
+ // seleccion(v,dl);
+  //writeln ('ORDENADO:');
+  //imprimirVector (v,dl);
+end.

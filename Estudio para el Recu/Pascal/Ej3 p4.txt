@@ -1,0 +1,160 @@
+Program ej3p4;
+{Implementar un programa modularizado para una librería. Implementar módulos para:
+a. Almacenar los productos vendidos en una estructura eficiente para la búsqueda por
+código de producto. De cada producto deben quedar almacenados su código, la
+cantidad total de unidades vendidas y el monto total. De cada venta se lee código de
+venta, código del producto vendido, cantidad de unidades vendidas y precio unitario. El
+ingreso de las ventas finaliza cuando se lee el código de venta -1.
+b. Imprimir el contenido del árbol ordenado por código de producto.
+c. Retornar el código de producto con mayor cantidad de unidades vendidas.
+d. Retornar la cantidad de códigos que existen en el árbol que son menores que un valor
+que se recibe como parámetro.
+e. Retornar el monto total entre todos los códigos de productos comprendidos entre dos
+valores recibidos (sin incluir) como parámetros.}
+type
+
+  producto = record
+    codeVenta: integer;
+    codeProducto: integer;
+    cantVendidas: integer;
+    precio: real;
+  end;
+  almacenados = record
+    codigo: integer;
+    cantVendidas: integer;
+    monto: real;
+  end;
+  
+  arbol= ^nodoArbol;
+  
+  nodoArbol= record
+    elem: almacenados;
+    hi:arbol;
+    hd: arbol;
+  end;
+
+procedure leerProducto (var p: producto);
+begin
+  writeln('Ingrese el codigo de venta del producto');
+  readln (p.codeVenta);
+  if (p.codeVenta<>-1) then begin
+    writeln('Ingrese el codigo del producto');
+    readln (p.codeProducto);
+    writeln('Ingrese la cantidad de unidades vendidas');
+    readln (p.cantVendidas);
+    writeln('Ingrese el precio del producto');
+    readln (p.precio);
+  end;
+end;
+procedure conversion (var aux: almacenados; p: producto);
+begin
+  aux.codigo:=p.codeProducto;
+  aux.cantVendidas:=p.cantVendidas;
+  aux.monto:=p.precio*p.cantVendidas;
+end;
+procedure agregarArbol (var a: arbol; p: almacenados);
+begin
+  if (a=nil) then begin
+    new(a);
+    a^.elem:= p;
+    a^.hi:=nil;
+    a^.hd:=nil;
+  end
+  else begin
+    if p.codigo<a^.elem.codigo then
+      agregarArbol(a^.hi,p)
+    else
+      agregarArbol(a^.hd,p)
+  end;
+end;
+procedure armarArbol (var a: arbol);
+var
+  p: producto;
+  aux: almacenados;
+begin
+  leerProducto (p);
+  while (p.codeVenta<>-1) do begin
+    conversion(aux,p);
+    agregarArbol(a,aux);
+    leerProducto(p);
+  end;
+end;
+procedure imprimirProducto (p: almacenados);
+begin
+  writeln('El codigo del producto es: ',p.codigo);
+  writeln ('Unidades vendidas: ',p.cantVendidas);
+  writeln ('Monto total: ',p.monto:0:2);
+  writeln ('--------------------------------------------');
+end;
+procedure imprimirArbol (a: arbol);
+begin
+  if (a<>nil) then begin
+    imprimirArbol (a^.hi);
+    imprimirProducto(a^.elem);
+    imprimirArbol(a^.hd);
+  end;
+end;
+procedure buscarMaximo (a: arbol;var codeMax,cantMax: integer);
+begin
+  if (a<>nil) then begin
+    if a^.elem.cantVendidas>cantMax then begin
+      cantMax:=a^.elem.cantVendidas;
+      codeMax:=a^.elem.codigo;
+    end;
+    buscarMaximo (a^.hd,codeMax,cantMax);
+    buscarMaximo (a^.hi,codeMax,cantMax);
+  end;
+end;
+procedure menoresQue (a: arbol; var cant: integer; x: integer);
+begin
+  if (a<>nil) then begin
+    if (x>a^.elem.codigo) then begin
+      cant:=cant+1;
+      menoresQue (a^.hi,cant,x); 
+      menoresQue (a^.hd,cant,x); 
+    end
+    else 
+      menoresQue (a^.hi,cant,x);
+  end;
+end;
+procedure calcularRango (a: arbol; min,max: integer; var cant: integer);
+begin
+  if (a<>nil) then begin
+    if ((a^.elem.codigo>min) and (a^.elem.codigo<max)) then begin
+      cant:=cant+1;
+      calcularRango (a^.hi,min,max,cant);
+      calcularRango (a^.hd,min,max,cant);
+    end
+    else begin
+      if (a^.elem.codigo<=min) then
+        calcularRango (a^.hd,min,max,cant)
+      else
+        if (a^.elem.codigo>=max) then
+          calcularRango (a^.hi,min,max,cant)
+    end;
+  end;
+end;
+var
+  a: arbol;
+  codeMax,cantMax,cant,min,max,x: integer;
+begin
+  a:=nil;
+  armarArbol(a);
+  imprimirArbol (a);
+  cantMax:=0;
+  buscarMaximo (a,codeMax,cantMax);
+  writeln ('El codigo del producto con la mayor cantidad de unidades venidadas es: ',codeMax);
+  Writeln ('Escribir un codigo de producto para chequear cuantos productos tienen uno menor');
+  readln (x);
+  cant:=0;
+  menoresQue (a,cant,x);
+  writeln ('La cantidad de codigos que son menores que el ingresado es: ',cant);
+  Writeln ('Ingrese valor minimo del rango de busqueda');
+  readln (min);
+  Writeln ('Ingrese valor maximo del rango de busqueda');
+  readln (max);
+  cant:=0;
+  calcularRango (a,min,max,cant);
+  Writeln ('La cantidad de codigos en el rango ingresado es: ',cant);
+end.
+

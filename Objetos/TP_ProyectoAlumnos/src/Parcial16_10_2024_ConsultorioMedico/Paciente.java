@@ -25,7 +25,7 @@ public class Paciente extends Persona {
 
     @Override
     public String toString (){
-        String aux= super.toString()+"OS "+this.getObraSocial();
+        String aux= super.toString()+"Obra social: "+this.getObraSocial();
         return aux;
     }
     public String getObraSocial() {

@@ -35,6 +35,7 @@ public class Ej1P5 {
         ins3.agregarSubsidio(sub5);
         ins3.agregarSubsidio(sub6);
         pro.otorgarTodos(Lector.leerString());
+        pro.otorgarTodos("El negru");
         System.out.println(pro.toString());
     }
     

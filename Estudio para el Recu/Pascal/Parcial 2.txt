@@ -1,0 +1,166 @@
+Program parcial;
+
+type
+  dias = 1..31;
+  envio= record
+    codigo: integer;
+    dia: dias;
+    cp: integer;
+    peso: real;
+  end;
+  
+  elementoL= record
+    codigo: integer;
+    dia: dias;
+    peso: real;
+  end; 
+  lista=^nodolista;
+  nodolista=record
+    elem: elementoL;
+    sig: lista;
+  end;
+  elementoa= record
+    cp: integer;
+    l:lista;
+  end;
+  arbol= ^nodo;
+  nodo= record
+    elem: elementoa;
+    hi: arbol;
+    hd: arbol;
+  end;
+procedure conversion (e: envio; var cp: integer; var elem: elementol);
+begin
+  cp:= e.cp;
+  elem.codigo:=e.codigo;
+  elem.dia:=e.dia;
+  elem.peso:=e.peso;
+end;
+procedure agregarLista (var l: lista; e: elementol);
+var
+  aux: lista;
+begin
+  new (aux);
+  aux^.elem:=e;
+  aux^.sig:=l;
+  l:=aux;
+end;
+procedure agregarArbol (var a:arbol; cp: integer; elemento: elementoL);
+begin
+  if a=nil then begin
+    new (a);
+    a^.elem.cp:=cp;
+    a^.hi:=nil;
+    a^.hd:=nil;
+    a^.elem.l:=nil;
+    agregarLista (a^.elem.l,elemento);
+  end
+  else begin
+    if (cp=a^.elem.cp) then
+      agregarLista (a^.elem.l,elemento)
+    else begin
+      if (cp>a^.elem.cp) then
+        agregarArbol (a^.hd,cp,elemento)
+      else
+        agregarArbol (a^.hi,cp,elemento);
+    end;
+  end;
+end;
+procedure leerenvio (var e:envio);
+begin
+  writeln ('Ingrese el codigo del envio');
+  readln (e.codigo);
+  if (e.codigo<>0) then
+    writeln ('Ingrese el cp del envio');
+    readln (e.cp);
+    writeln ('Ingrese el peso del envio');
+    readln (e.peso);
+    writeln ('Ingrese el dia del envio');
+    readln (e.dia);
+end;
+procedure armarArbol(var a:arbol);
+var
+  e:envio;
+  cp: integer;
+  elemento: elementol;
+begin
+  leerEnvio (e);
+  while (e.codigo<>0) do begin
+    conversion (e,cp,elemento);
+    agregarArbol (a,cp,elemento);
+    leerEnvio (e)
+  end;
+end;
+{procedure recorrerLista (l: lista; var cant: integer);
+begin
+  while l<>nil then begin
+    cant:=cant+1
+    l:=l^.sig;
+  end;
+end; }
+procedure chequearcp (a: arbol; x: integer; var l: lista);
+begin
+  if (a<>nil) then begin
+    if (a^.elem.cp=x) then begin
+      l:=a^.elem.l
+      //recorrerLista (a^.elem.l,cant);
+    end
+    else begin
+      if (x>a^.elem.cp) then
+        chequearcp (a^.hd,x,l)
+      else
+        chequearcp (a^.hi,x,l);
+    end;
+  end;
+end;
+{procedure buscarMaximo (l: lista; pesomin,pesomax: real; var codemin,codemax: integer);
+begin
+  pesomin:=9999;
+  pesomax:=-1;
+  while (l<>nil) do begin begin
+    if (l^.elem.peso>pesomax) then begin
+      pesomax:=l^.elem.peso;
+      codemax:=l^.elem.codigo;
+    end;
+    if (l^.elem.peso<pesomin) then begin
+      pesomin:=l^.elem.peso;
+      codemin:=l^.elem.codigo;
+    end;
+    l:=l^.sig;
+  end;
+  end;
+end;}
+procedure buscarMaximo (l: lista; pesomin,pesomax: real; var codemin,codemax: integer);
+begin
+  if (l<>nil) then begin
+    if (l^.elem.peso>pesomax) then begin
+      pesomax:=l^.elem.peso;
+      codemax:=l^.elem.codigo;
+    end;
+    if (l^.elem.peso<pesomin) then begin
+      pesomin:=l^.elem.peso;
+      codemin:=l^.elem.codigo;
+    end;
+    buscarMaximo (l^.sig,pesomin,persomax,codemin,codemax);
+  end;
+  end;
+end;
+var
+  a: arbol;
+  x,cant: integer;
+  pesomin,pesomax: real;
+  codemin,codemax: integer;
+  l: lista;
+begin
+  a:=nil;
+  armarArbol (a);
+  writeln ('Ingrese un codigo posta para chequear cuantos envios se le hicieron');
+  cant:=0;
+  readln (x);
+  chequearcp(a,x,l);
+  writeln ('se devolvio una lista con todos los envios');
+  pesomin:=9999;
+  pesomax:=-1;
+  buscarMaximo(l,pesomin,pesomax,codemin,codemax);
+  writeln ('el codigo con el mayor peso en el envio es: ',codemax,' el otro ',codemin);
+end.

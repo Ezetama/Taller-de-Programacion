@@ -17,6 +17,7 @@ public class Ej01Tabla2 {
         for (i=0;i<DF;i++) 
             tabla2[i]=2*i;
         System.out.println("2x" + "5" + "="+ tabla2[5]);
+        System.out.println("Cuntado vale esto? "+tabla2[0]);
 
     }
     

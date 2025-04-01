@@ -1,0 +1,199 @@
+program P5Ej4;
+
+
+type
+  vector= array [1..5] of string;
+  
+  reclamo= record
+    codigo: integer;
+    dni: integer;
+    anio: integer;
+    tipo: string;
+  end;
+  
+  reclamolista = record
+    codigo: integer;
+    anio: integer;
+    tipo: String;
+  end;
+  
+  lista= ^nodoLista;
+  nodoLista=record
+    elem:reclamolista;
+    sig: lista;
+  end;
+  elemento= record
+    dni: integer;
+    cant: integer;
+    reclamos: lista;
+  end;
+  
+  arbol= ^nodo;
+  nodo=record
+    elem: elemento;
+    hi: arbol;
+    hd:arbol;
+  end;
+  
+  lista2= ^nodo2;
+  
+  nodo2= record
+    codigo: integer;
+    sig: lista;
+  end;
+procedure hacerVector (var v: vector);
+begin
+  v[1]:=('Producto defectuoso');
+  v[2]:=('Malos tratos');
+  v[3]:=('producto en mal estado');
+  v[4]:=('no es lo que pedi');
+  v[5]:=('Nunca llego mi producto');
+end;
+procedure leerReclamo (var r:reclamo; v: vector);
+var
+  x: integer;
+begin
+  writeln ('Ingrese codigo del reclamo');
+  readln (r.codigo);
+  if (r.codigo<>0) then begin
+    r.dni:=random (20)+1;
+    r.anio:=random (10)+2015;
+    x:=random (5)+1;
+    r.tipo:=v[x];
+  end;
+  writeln ('dni: ',r.dni,' ANIO: ',r.anio);
+end;
+procedure conversion (r: reclamo; var dni: integer; var elemen: reclamolista);
+begin
+  dni:=r.dni;
+  elemen.codigo:=r.codigo;
+  elemen.anio:=r.anio;
+  elemen.tipo:=r.tipo;
+end;
+procedure agregarLista (var l: lista; elemen: reclamolista);
+var
+  aux: lista;
+begin
+  new(aux);
+  aux^.elem:=elemen;
+  aux^.sig:=l;
+  l:=aux;
+end;
+
+procedure agregarArbol (var a: arbol; dni: integer; elemen: reclamolista);
+begin
+  if (a=nil) then begin
+    new(a);
+    a^.elem.dni:=dni;
+    a^.elem.cant:=1;
+    a^.hi:=nil;
+    a^.hd:=nil;
+    a^.elem.reclamos:=nil;
+    agregarLista (a^.elem.reclamos,elemen);
+  end
+  else begin
+    if (dni=a^.elem.dni) then begin
+      a^.elem.cant:=a^.elem.cant+1;
+      agregarLista (a^.elem.reclamos,elemen);
+    end
+    else
+      if (dni>a^.elem.dni) then
+        agregarArbol (a^.hd,dni,elemen)
+      else
+        agregarArbol (a^.hi,dni,elemen);
+  end;
+end;
+procedure armarArbol (var a: arbol);
+var
+  r: reclamo;
+  v: vector;
+  dni: integer;
+  elemen: reclamolista;
+begin
+  hacerVector(v);
+  leerReclamo (r,v);
+  while (r.codigo<>0) do begin
+    conversion (r,dni,elemen);
+    agregarArbol (a,dni,elemen);
+    leerReclamo (r,v);
+  end;
+end;
+procedure chequearReclamos (a: arbol; x: integer; var cant: integer);
+begin
+  if (a<>nil) then begin
+    if a^.elem.dni=x then
+      cant:=a^.elem.cant
+    else
+      if x>a^.elem.dni then
+        chequearReclamos (a^.hd,x,cant)
+      else 
+        chequearReclamos (a^.hd,x,cant);
+  end;
+end;
+procedure chequearRango (a: arbol; min,max: integer; var cant: integer);
+begin
+  if a<>nil then begin
+    if ((a^.elem.dni>min) and (a^.elem.dni<max)) then begin
+      cant:= cant+a^.elem.cant;
+      chequearRango (a^.hi,min,max,cant);
+      chequearRango (a^.hd,min,max,cant);
+    end
+    else begin
+      if (a^.elem.dni>=max) then
+        chequearRango (a^.hi,min,max,cant)
+      else
+        chequearRango (a^.hd,min,max,cant);
+    end;
+  end;
+end;
+procedure agregarlista2 (var l2: lista2; codigo: integer);
+var
+  aux: lista2;
+begin
+  new (aux);
+  aux^.codgo:=codigo;
+  aux^.sig:= l;
+  l:=aux;
+end;
+procedure recorrerLista (l: lista; anio: integer; var l2: lista);
+begin
+  while (l<>nil) do begin
+    if (l^.elem.anio=anio) then
+      agregarlista2 (l2,l^.elem.codigo);
+    l:=l^.sig;
+  end;
+end;
+procedure chequearAnio (a: arbol; anio: integer; var cant: integer);
+begin
+  if (a<>nil) then begin
+    recorrerLista (a^.elem.reclamos,anio,cant);
+    chequearAnio (a^.hi,anio,cant);
+    chequearAnio (a^.hd,anio,cant);
+  end;
+end;
+var
+  a: arbol;
+  x,cant,min,max,anio: integer;
+  l2: lista2;
+begin
+  a:=nil;
+  armarArbol(a);
+  writeln ('Ingrese el numero de dni para chequear la cantidad de reclamos que ha hecho');
+  readln (x);
+  chequearReclamos (a,x,cant);
+  writeln ('La cantidad de reclamos efectuados por ese dni es: ',cant);
+  writeln ('Ingrese un rango dnis para chequear su cantidad de reclamos');
+  writeln ('Ingrese minimo');
+  readln (min);
+  writeln ('Ingrese maximo');
+  readln (max);
+  cant:=0;
+  chequearRango (a,min,max,cant);
+  writeln ('la cantidad de reclamos efectuados por el rango ingresado es: ',cant);
+  writeln ('Ingrese un anio para chequear cuantos reclamos se hicieron');
+  readln (anio);
+  cant:=0;
+  l2:=nil;
+  chequearAnio (a,anio,l2);
+  writeln ('El anio ', anio,' se efectuaron ',cant,' reclamos');
+end.
